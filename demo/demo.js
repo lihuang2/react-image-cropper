@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import Css from './demo.less';
 import Cropper from '../component/Cropper';
 
-class ImageCropDemo extends Component {
+class ImageCropDemo extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -149,5 +149,4 @@ const styles = {
         }
     }
 };
-
-ReactDOM.render(<ImageCropDemo/>, document.getElementById('root'))
+ReactDOM.render(<ImageCropDemo/>, document.getElementById('root'));

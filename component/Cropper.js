@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import deepExtend from 'deep-extend';
 import PropTypes from 'prop-types';
 
-class Cropper extends Component {
+class Cropper extends React.Component {
     constructor(props) {
         super(props);
         let {originX, originY, width, height, selectionNatural, fixedRatio, allowNewSelection, rate, styles, imageLoaded, beforeImageLoaded, imageLoadError, onDragStop} = this.props;
@@ -50,10 +51,10 @@ class Cropper extends Component {
             let img = ReactDOM.findDOMNode(this.refs.img);
             const _rateWidth = img_width / img.naturalWidth;
             const _rateHeight = img_height / img.naturalHeight;
-            const realWidth = parseInt(frameWidth * _rateWidth);
-            const realHeight = parseInt(frameHeight * _rateHeight);
-            const realX = parseInt(originX * _rateHeight);
-            const realY = parseInt(originY * _rateWidth);
+            const realWidth = Number(frameWidth * _rateWidth);
+            const realHeight = Number(frameHeight * _rateHeight);
+            const realX = Number(originX * _rateHeight);
+            const realY = Number(originY * _rateWidth);
 
             frameWidth = realWidth;
             frameHeight = realHeight;
@@ -182,8 +183,8 @@ class Cropper extends Component {
                 var heightRatio = img.offsetWidth / img.naturalWidth;
                 var widthRatio = img.offsetHeight / img.naturalHeight;
 
-                var img_height = parseInt(img.naturalHeight * heightRatio);
-                var img_width = parseInt(img.naturalWidth * widthRatio);
+                var img_height = Number(img.naturalHeight * heightRatio);
+                var img_width = Number(img.naturalWidth * widthRatio);
 
                 let imgSize = that.props.imgSize;
                 if(imgSize && imgSize.default_width && imgSize.default_height) {
@@ -410,10 +411,10 @@ class Cropper extends Component {
         if (selectionNatural && moved) {
             const _rateWidth = img.naturalWidth / img_width;
             const _rateHeight = img.naturalHeight / img_height;
-            const realWidth = parseInt(thisFrameWidth * _rateWidth);
-            const realHeight = parseInt(thisFrameHeight * _rateHeight);
-            const realX = parseInt(thisOriginX * _rateHeight);
-            const realY = parseInt(thisOriginY * _rateWidth);
+            const realWidth = Number(thisFrameWidth * _rateWidth);
+            const realHeight = Number(thisFrameHeight * _rateHeight);
+            const realX = Number(thisOriginX * _rateHeight);
+            const realY = Number(thisOriginY * _rateWidth);
             _return = {width: realWidth, height: realHeight, x: realX, y: realY};
         } else {
             _return = {width: thisFrameWidth, height: thisFrameHeight, x: thisOriginX, y: thisOriginY};
@@ -737,4 +738,3 @@ var defaultStyles = {
         background: 'transparent'
     },
 };
-module.exports = Cropper;
