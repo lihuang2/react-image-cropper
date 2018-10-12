@@ -1,9 +1,11 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import Css from './demo.less';
-import Cropper from '../component/Cropper';
+import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
+import './demo.less'
+import Cropper from '../component/Cropper'
 
-class ImageCropDemo extends React.Component {
+const src = "dist/demo.jpg";
+const srcTall = 'dist/tallimage.jpg';
+class ImageCropDemo extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -56,8 +58,7 @@ class ImageCropDemo extends React.Component {
         });
     }
     render() {
-        const src = "demo.jpg";
-        const srcTall = 'tallimage.jpg';
+
         return (
             <ul>
                 <li>
@@ -126,6 +127,7 @@ class ImageCropDemo extends React.Component {
         );
     }
 }
+
 const styles = {
     image4Wrapper: {
     },
@@ -149,4 +151,8 @@ const styles = {
         }
     }
 };
-ReactDOM.render(<ImageCropDemo/>, document.getElementById('root'));
+if (module.hot) {
+    module.hot.accept()
+}
+
+ReactDOM.render(<ImageCropDemo/>, document.getElementById('root'))

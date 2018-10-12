@@ -40,8 +40,12 @@ class Cropper extends React.Component {
             originalFrameWidth: width,
             originalFrameHeight: fixedRatio ? width / rate : height,
         }
+        this.handleDragStart = this.handleDragStart.bind(this);
+        this.imageLoaded = this.imageLoaded.bind(this);
+        this.imageLoadError = this.imageLoadError.bind(this);
     }
-    initStyles(){
+
+    initStyles() {
         let {originX, originY} = this.props;
         const {selectionNatural, img_width, img_height,} = this.state;
 
@@ -79,8 +83,7 @@ class Cropper extends React.Component {
         // calc clone position
         this.calcPosition(frameWidth, frameHeight, originX, originY);
     }
-    updateFrame(newWidth, newHeight, newOriginX, newOriginY)
-    {
+    updateFrame(newWidth, newHeight, newOriginX, newOriginY) {
         this.setState({
             frameWidth: newWidth,
             frameHeight: newHeight,
@@ -95,7 +98,7 @@ class Cropper extends React.Component {
         });
     }
 
-    calcPosition(width, height, left, top, move){
+    calcPosition(width, height, left, top, move) {
         const {img_width, img_height, fixedRatio} = this.state;
         const {rate} = this.props;
 
@@ -161,19 +164,23 @@ class Cropper extends React.Component {
         this.setState({imgLeft: left, imgTop: top, imgWidth: width, imgHeight: height});
     }
 
-    imgOnLoad(){
-        const {imageLoaded} = this.state;
-        this.setState({imgLoaded: true});
-        imageLoaded();
+    imgOnLoad() {
+        if(this.state.imageLoaded) {
+            const {imageLoaded} = this.state;
+            this.setState({imgLoaded: true});
+            imageLoaded();
+        }
     }
 
-    imgOnError(proxy, error) {
-        const {imageLoadError} = this.state;
-        this.setState({imgLoaded: false});
-        imageLoadError({error: "Error loading image"});
+    imgOnError() {
+        if(this.state.imageLoadError) {
+            const {imageLoadError} = this.state;
+            this.setState({imgLoaded: false});
+            imageLoadError({error: "Error loading image"});
+        }
     }
 
-    imgGetSizeBeforeLoad(){
+    imgGetSizeBeforeLoad() {
         var that = this;
         setTimeout(function () {
             let img = ReactDOM.findDOMNode(that.refs.img);
@@ -208,7 +215,7 @@ class Cropper extends React.Component {
         }, 0)
     }
 
-    createNewFrame(e){
+    createNewFrame(e) {
         if (this.state.dragging) {
             const pageX = e.pageX ? e.pageX : e.targetTouches[0].pageX;
             const pageY = e.pageY ? e.pageY : e.targetTouches[0].pageY;
@@ -232,7 +239,7 @@ class Cropper extends React.Component {
         }
     }
 
-    handleDrag(e){
+    handleDrag(e) {
         if (this.state.dragging) {
             e.preventDefault();
             let {action} = this.state;
@@ -242,7 +249,7 @@ class Cropper extends React.Component {
         }
     }
 
-    frameMove(e){
+    frameMove(e) {
         const {originX, originY, startX, startY, frameWidth, frameHeight, maxLeft, maxTop} = this.state;
         const pageX = e.pageX ? e.pageX : e.targetTouches[0].pageX;
         const pageY = e.pageY ? e.pageY : e.targetTouches[0].pageY;
@@ -288,7 +295,7 @@ class Cropper extends React.Component {
         }
     }
 
-    handleDragStop(e){
+    handleDragStop(e) {
         if (this.state.dragging) {
             e.preventDefault();
             const frameNode = ReactDOM.findDOMNode(this.refs.frameNode);
@@ -309,25 +316,20 @@ class Cropper extends React.Component {
         }
     }
 
-    componentDidMount(){
-        document.addEventListener('mousemove', this.handleDrag);
-        document.addEventListener('touchmove', this.handleDrag);
-
-        document.addEventListener('mouseup', this.handleDragStop);
-        document.addEventListener('touchend', this.handleDragStop);
-
+    componentDidMount() {
+        document.addEventListener('mousemove', this.handleDrag.bind(this))
+        document.addEventListener('touchmove', this.handleDrag.bind(this))
+        document.addEventListener('mouseup', this.handleDragStop.bind(this))
+        document.addEventListener('touchend', this.handleDragStop.bind(this))
         this.imgGetSizeBeforeLoad();
     }
-
-    componentWillUnmount(){
-        document.removeEventListener('mousemove', this.handleDrag);
-        document.removeEventListener('touchmove', this.handleDrag);
-
-        document.removeEventListener('mouseup', this.handleDragStop);
-        document.removeEventListener('touchend', this.handleDragStop);
+    componentWillUnmount() {
+        document.removeEventListener('mousemove', this.handleDrag.bind(this))
+        document.removeEventListener('touchmove', this.handleDrag.bind(this))
+        document.removeEventListener('mouseup', this.handleDragStop.bind(this))
+        document.removeEventListener('touchend', this.handleDragStop.bind(this))
     }
-    componentWillReceiveProps(newProps)
-    {
+    componentWillReceiveProps(newProps) {
         var width = this.props.width !== newProps.width;
         var height = this.props.height !== newProps.height;
         var originX = this.props.originX !== newProps.originX;
@@ -337,7 +339,7 @@ class Cropper extends React.Component {
             this.updateFrame(newProps.width, newProps.height, newProps.originX, newProps.originY);
         }
     }
-    frameDotMove(dir, e){
+    frameDotMove(dir, e) {
         const pageX = e.pageX ? e.pageX : e.targetTouches[0].pageX;
         const pageY = e.pageY ? e.pageY : e.targetTouches[0].pageY;
         const {rate} = this.props;
@@ -383,7 +385,7 @@ class Cropper extends React.Component {
         }
     }
 
-    crop(){
+    crop() {
         const {frameWidth, frameHeight, originX, originY, img_width} = this.state;
         let canvas = document.createElement('canvas');
         let img = ReactDOM.findDOMNode(this.refs.img);
@@ -397,7 +399,7 @@ class Cropper extends React.Component {
         return canvas.toDataURL();
     }
 
-    values(){
+    values() {
         const {frameWidth, frameHeight, originX, originY, img_width, img_height, selectionNatural, moved, originalOriginX, originalOriginY, originalFrameWidth, originalFrameHeight} = this.state;
 
         let img = ReactDOM.findDOMNode(this.refs.img);
@@ -446,68 +448,68 @@ class Cropper extends React.Component {
                  onMouseDown={disabled ? undefined : this.handleDragStart}
                  onTouchStart={disabled ? undefined : this.handleDragStart}
                  style={deepExtend({}, this.state.styles.container, {position: 'relative', height: img_height})}>
-            {imageNode}
-            {imgBeforeLoaded ?
-                <div>
-                    <div style={this.state.styles.modal}/>
-                    <div style={
-                        deepExtend({}, this.state.styles.frame,
-                            dragging ? this.state.styles.dragging_frame : {},
-                            {
-                                display: 'block',
-                                left: this.state.imgLeft,
-                                top: this.state.imgTop,
-                                width: this.state.imgWidth,
-                                height: this.state.imgHeight
-                            }
-                        )} ref="frameNode">
-                        <div style={this.state.styles.clone}>
-                            <img ref="cloneImg" width={img_width} height={img_height} crossOrigin="anonymous" src={src}
-                                style={deepExtend({}, this.state.styles.img, {marginLeft: -this.state.imgLeft, marginTop: -this.state.imgTop})}
-                            />
-                        </div>
-                        <span style={deepExtend({}, this.state.styles.move, disabled ? {cursor: 'initial'} : {})} data-action='move'/>
-                        <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotCenter, disabledStyle)} data-action='move'>
+                {imageNode}
+                {imgBeforeLoaded ?
+                    <div>
+                        <div style={this.state.styles.modal}/>
+                        <div style={
+                            deepExtend({}, this.state.styles.frame,
+                                dragging ? this.state.styles.dragging_frame : {},
+                                {
+                                    display: 'block',
+                                    left: this.state.imgLeft,
+                                    top: this.state.imgTop,
+                                    width: this.state.imgWidth,
+                                    height: this.state.imgHeight
+                                }
+                            )} ref="frameNode">
+                            <div style={this.state.styles.clone}>
+                                <img ref="cloneImg" width={img_width} height={img_height} crossOrigin="anonymous" src={src}
+                                     style={deepExtend({}, this.state.styles.img, {marginLeft: -this.state.imgLeft, marginTop: -this.state.imgTop})}
+                                />
+                            </div>
+                            <span style={deepExtend({}, this.state.styles.move, disabled ? {cursor: 'initial'} : {})} data-action='move'/>
+                            <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotCenter, disabledStyle)} data-action='move'>
                            <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerCenterVertical)}/>
                            <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerCenterHorizontal)}/>
                         </span>
-                        <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotNE)} data-action="ne">
+                            <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotNE)} data-action="ne">
                             <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerNE, disabledStyle)}/>
                         </span>
-                        <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotN)} data-action="n">
+                            <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotN)} data-action="n">
                             <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerN, disabledStyle)}/>
                         </span>
-                        <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotNW)} data-action="nw">
+                            <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotNW)} data-action="nw">
                             <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerNW, disabledStyle)}/>
                         </span>
-                        <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotE)} data-action="e">
+                            <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotE)} data-action="e">
                             <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerE, disabledStyle)}/>
                         </span>
-                        <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotW)} data-action="w">
+                            <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotW)} data-action="w">
                             <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerW, disabledStyle)}/>
                         </span>
-                        <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotSE)} data-action="se">
+                            <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotSE)} data-action="se">
                             <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerSE, disabledStyle)}/>
                         </span>
-                        <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotS)} data-action="s">
+                            <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotS)} data-action="s">
                             <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerS, disabledStyle)}/>
                         </span>
-                        <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotSW)} data-action="sw">
+                            <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotSW)} data-action="sw">
                             <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerSW, disabledStyle)}/>
                         </span>
-                        <span style={deepExtend({}, this.state.styles.line, this.state.styles.lineN, disabledStyle)} data-action="n"/>
-                        <span style={deepExtend({}, this.state.styles.line, this.state.styles.lineS, disabledStyle)} data-action="s"/>
-                        <span style={deepExtend({}, this.state.styles.line, this.state.styles.lineW, disabledStyle)} data-action="w"/>
-                        <span style={deepExtend({}, this.state.styles.line, this.state.styles.lineE, disabledStyle)} data-action="e"/>
+                            <span style={deepExtend({}, this.state.styles.line, this.state.styles.lineN, disabledStyle)} data-action="n"/>
+                            <span style={deepExtend({}, this.state.styles.line, this.state.styles.lineS, disabledStyle)} data-action="s"/>
+                            <span style={deepExtend({}, this.state.styles.line, this.state.styles.lineW, disabledStyle)} data-action="w"/>
+                            <span style={deepExtend({}, this.state.styles.line, this.state.styles.lineE, disabledStyle)} data-action="e"/>
+                        </div>
                     </div>
-                </div>
-                :
-                null
-            }
-        </div>);
+                    :
+                    null
+                }
+            </div>);
     }
 }
-Cropper.prototype = {
+Cropper.propTypes = {
     src: PropTypes.string.isRequired,
     originX: PropTypes.number,
     originY: PropTypes.number,
@@ -738,3 +740,5 @@ var defaultStyles = {
         background: 'transparent'
     },
 };
+
+export default Cropper;
