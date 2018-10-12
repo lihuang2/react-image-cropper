@@ -41,8 +41,8 @@ class Cropper extends React.Component {
             originalFrameHeight: fixedRatio ? width / rate : height,
         }
         this.handleDragStart = this.handleDragStart.bind(this);
-        this.imageLoaded = this.imageLoaded.bind(this);
-        this.imageLoadError = this.imageLoadError.bind(this);
+        this.imgOnLoad = this.imgOnLoad.bind(this);
+        this.imgOnError = this.imgOnError.bind(this);
     }
 
     initStyles() {
